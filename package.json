@@ -1,0 +1,46 @@
+{
+  "name": "events-app-backend-application",
+  "version": "1.0.0",
+  "description": "Event, Stay & Services Booking Platform - Backend API",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node src/seeds/index.js",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix"
+  },
+  "keywords": [
+    "events",
+    "booking",
+    "platform",
+    "api"
+  ],
+  "author": "MYT Event Planners",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.9.0",
+    "cors": "^2.8.6",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
+    "joi": "^18.0.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.1",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "nodemailer": "^8.0.1",
+    "slugify": "^1.6.6",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.0.0",
+    "nodemon": "^3.1.13",
+    "prettier": "^3.8.1"
+  }
+}

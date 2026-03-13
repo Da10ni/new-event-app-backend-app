@@ -1,0 +1,7 @@
+node_modules/
+logs/
+uploads/
+dist/
+config.bat
+.env
+.env.local
