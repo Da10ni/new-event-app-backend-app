@@ -1,12 +1,15 @@
 import http from 'http';
 import app from './app.js';
 import { config } from './config/index.js';
+import { connectDB } from './config/db.js';
 import { initializeSocket } from './config/socket.js';
 import corsOptions from './config/cors.js';
 import { logger } from './utils/logger.js';
 
 const startServer = async () => {
   try {
+    await connectDB();
+
     const server = http.createServer(app);
     initializeSocket(server, corsOptions);
 
