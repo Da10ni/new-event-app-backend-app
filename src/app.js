@@ -5,8 +5,8 @@ import routes from './routes/index.js';
 import { errorHandler } from './middlewares/errorHandler.middleware.js';
 import { connectDB } from './config/db.js';
 
-// Connect to MongoDB (for serverless environments like Vercel)
-connectDB();
+// Connect to MongoDB
+const dbReady = connectDB();
 
 const app = express();
 
