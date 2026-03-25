@@ -6,7 +6,7 @@ const corsOptions = {
 
     if (config.env === 'development') return callback(null, true);
 
-    if (config.cors.allowedOrigins.includes(origin)) {
+    if (config.cors.allowedOrigins.includes('*') || config.cors.allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
