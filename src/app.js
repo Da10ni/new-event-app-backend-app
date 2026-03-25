@@ -3,6 +3,10 @@ import cors from 'cors';
 import corsOptions from './config/cors.js';
 import routes from './routes/index.js';
 import { errorHandler } from './middlewares/errorHandler.middleware.js';
+import { connectDB } from './config/db.js';
+
+// Connect to MongoDB (for serverless environments like Vercel)
+connectDB();
 
 const app = express();
 
