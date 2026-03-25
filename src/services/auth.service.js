@@ -58,10 +58,19 @@ export const registerVendor = async (vendorData) => {
     address,
   });
 
+  const otp = generateOTP();
+  const hashedOtp = await hashPassword(otp);
+  await OTP.create({
+    userId: user._id,
+    purpose: 'email_verification',
+    code: hashedOtp,
+    expiresAt: getOTPExpiry(config.otp.expiresInMinutes),
+  });
+
   const tokens = await generateTokenPair(user);
   const safeUser = user.toObject();
   delete safeUser.password;
-  return { user: safeUser, vendor, ...tokens };
+  return { user: safeUser, vendor, ...tokens, otp };
 };
 
 export const login = async ({ email, password }) => {

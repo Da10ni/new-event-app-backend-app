@@ -12,6 +12,7 @@ export const register = asyncHandler(async (req, res) => {
 
 export const registerVendor = asyncHandler(async (req, res) => {
   const result = await authService.registerVendor(req.body);
+  await sendOTPEmail(result.user.email, result.otp, 'email_verification');
   sendResponse(res, { statusCode: HTTP_STATUS.CREATED, message: MESSAGES.VENDOR.CREATED, data: { user: result.user, vendor: result.vendor, accessToken: result.accessToken, refreshToken: result.refreshToken } });
 });
 
