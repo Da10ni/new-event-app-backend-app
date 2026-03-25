@@ -233,6 +233,14 @@ export const suspendVendor = async (vendorId) => {
   return vendor;
 };
 
+export const getAdminListingById = async (listingId) => {
+  const listing = await Listing.findById(listingId)
+    .populate('vendor', 'businessName businessSlug userId')
+    .populate('category', 'name slug');
+  if (!listing) throw new AppError(MESSAGES.LISTING.NOT_FOUND, HTTP_STATUS.NOT_FOUND);
+  return listing;
+};
+
 export const getAdminListings = async (queryString) => {
   const features = new ApiFeatures(
     Listing.find().populate('vendor', 'businessName businessSlug').populate('category', 'name slug'),
@@ -274,12 +282,111 @@ export const toggleListingFeatured = async (listingId) => {
 export const getAdminBookings = async (queryString) => {
   const features = new ApiFeatures(
     Booking.find()
-      .populate('client', 'firstName lastName email')
-      .populate('listing', 'title slug')
-      .populate('vendor', 'businessName'),
+      .populate('client', 'firstName lastName email phone')
+      .populate('listing', 'title slug images pricing address')
+      .populate('vendor', 'businessName businessSlug'),
     queryString
   ).filter().sort().paginate();
   await features.countDocuments();
   const bookings = await features.query;
   return { bookings, meta: features.getMeta() };
+};
+
+export const getAdminBookingById = async (bookingId) => {
+  const booking = await Booking.findById(bookingId)
+    .populate('client', 'firstName lastName email phone avatar')
+    .populate('listing', 'title slug images pricing address')
+    .populate('vendor', 'businessName businessSlug');
+  if (!booking) {
+    throw new AppError(MESSAGES.BOOKING.NOT_FOUND, HTTP_STATUS.NOT_FOUND);
+  }
+  return booking;
+};
+
+// ── Admin Review Management ──
+
+export const getAdminReviews = async (queryString) => {
+  const features = new ApiFeatures(
+    Review.find()
+      .populate('client', 'firstName lastName email avatar')
+      .populate('listing', 'title slug')
+      .populate('vendor', 'businessName'),
+    queryString
+  ).filter().sort().paginate();
+  await features.countDocuments();
+  const reviews = await features.query;
+  return { reviews, meta: features.getMeta() };
+};
+
+export const getAdminReviewById = async (reviewId) => {
+  const review = await Review.findById(reviewId)
+    .populate('client', 'firstName lastName email avatar')
+    .populate('listing', 'title slug')
+    .populate('vendor', 'businessName');
+  if (!review) throw new AppError(MESSAGES.REVIEW.NOT_FOUND, HTTP_STATUS.NOT_FOUND);
+  return review;
+};
+
+export const deleteAdminReview = async (reviewId) => {
+  const review = await Review.findByIdAndDelete(reviewId);
+  if (!review) throw new AppError(MESSAGES.REVIEW.NOT_FOUND, HTTP_STATUS.NOT_FOUND);
+
+  await Booking.findByIdAndUpdate(review.booking, { isReviewed: false });
+
+  // Recalculate rating aggregates
+  const listingStats = await Review.aggregate([
+    { $match: { listing: review.listing, isVisible: true } },
+    { $group: { _id: null, avg: { $avg: '$rating' }, count: { $sum: 1 } } },
+  ]);
+  const listing = await Listing.findById(review.listing);
+  if (listing) {
+    listing.averageRating = listingStats[0]?.avg ? Math.round(listingStats[0].avg * 100) / 100 : 0;
+    listing.totalReviews = listingStats[0]?.count || 0;
+    await listing.save();
+  }
+
+  const vendorStats = await Review.aggregate([
+    { $match: { vendor: review.vendor, isVisible: true } },
+    { $group: { _id: null, avg: { $avg: '$rating' }, count: { $sum: 1 } } },
+  ]);
+  const vendor = await Vendor.findById(review.vendor);
+  if (vendor) {
+    vendor.averageRating = vendorStats[0]?.avg ? Math.round(vendorStats[0].avg * 100) / 100 : 0;
+    vendor.totalReviews = vendorStats[0]?.count || 0;
+    await vendor.save();
+  }
+
+  return review;
+};
+
+export const toggleReviewVisibility = async (reviewId) => {
+  const review = await Review.findById(reviewId);
+  if (!review) throw new AppError(MESSAGES.REVIEW.NOT_FOUND, HTTP_STATUS.NOT_FOUND);
+  review.isVisible = !review.isVisible;
+  await review.save();
+
+  // Recalculate rating aggregates since visibility affects them
+  const listingStats = await Review.aggregate([
+    { $match: { listing: review.listing, isVisible: true } },
+    { $group: { _id: null, avg: { $avg: '$rating' }, count: { $sum: 1 } } },
+  ]);
+  const listing = await Listing.findById(review.listing);
+  if (listing) {
+    listing.averageRating = listingStats[0]?.avg ? Math.round(listingStats[0].avg * 100) / 100 : 0;
+    listing.totalReviews = listingStats[0]?.count || 0;
+    await listing.save();
+  }
+
+  const vendorStats = await Review.aggregate([
+    { $match: { vendor: review.vendor, isVisible: true } },
+    { $group: { _id: null, avg: { $avg: '$rating' }, count: { $sum: 1 } } },
+  ]);
+  const vendor = await Vendor.findById(review.vendor);
+  if (vendor) {
+    vendor.averageRating = vendorStats[0]?.avg ? Math.round(vendorStats[0].avg * 100) / 100 : 0;
+    vendor.totalReviews = vendorStats[0]?.count || 0;
+    await vendor.save();
+  }
+
+  return review;
 };

@@ -1,5 +1,6 @@
 export const NOTIFICATION_TYPES = Object.freeze({
   BOOKING_NEW_INQUIRY: 'booking_new_inquiry',
+  BOOKING_ACCEPTED: 'booking_accepted',
   BOOKING_CONFIRMED: 'booking_confirmed',
   BOOKING_REJECTED: 'booking_rejected',
   BOOKING_CANCELLED: 'booking_cancelled',

@@ -9,6 +9,7 @@ import adminListingRoutes from './admin.listing.routes.js';
 import adminBookingRoutes from './admin.booking.routes.js';
 import adminCategoryRoutes from './admin.category.routes.js';
 import adminReportsRoutes from './admin.reports.routes.js';
+import adminReviewRoutes from './admin.review.routes.js';
 
 const router = Router();
 
@@ -21,5 +22,6 @@ router.use('/listings', adminListingRoutes);
 router.use('/bookings', adminBookingRoutes);
 router.use('/categories', adminCategoryRoutes);
 router.use('/reports', adminReportsRoutes);
+router.use('/reviews', adminReviewRoutes);
 
 export default router;

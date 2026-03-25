@@ -44,6 +44,16 @@ const bookingSchema = new mongoose.Schema(
     cancelledAt: { type: Date },
     completedAt: { type: Date },
     isReviewed: { type: Boolean, default: false },
+    paymentStatus: {
+      type: String,
+      enum: ['pending', 'processing', 'succeeded', 'failed', 'refunded'],
+      default: 'pending',
+    },
+    paymentIntentId: { type: String },
+    transactionId: { type: String },
+    paidAt: { type: Date },
+    refundId: { type: String },
+    refundedAt: { type: Date },
   },
   {
     timestamps: true,
@@ -58,6 +68,7 @@ bookingSchema.index({ listing: 1, eventDate: 1 });
 bookingSchema.index({ status: 1, createdAt: -1 });
 bookingSchema.index({ eventDate: 1 });
 bookingSchema.index({ vendor: 1, eventDate: 1, status: 1 });
+bookingSchema.index({ paymentIntentId: 1 });
 
 const Booking = mongoose.model('Booking', bookingSchema);
 export default Booking;

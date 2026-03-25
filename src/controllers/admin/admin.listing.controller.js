@@ -8,6 +8,11 @@ export const getListings = asyncHandler(async (req, res) => {
   sendResponse(res, { message: MESSAGES.GENERAL.SUCCESS, data: { listings }, meta });
 });
 
+export const getListingById = asyncHandler(async (req, res) => {
+  const listing = await adminService.getAdminListingById(req.params.id);
+  sendResponse(res, { message: MESSAGES.GENERAL.SUCCESS, data: { listing } });
+});
+
 export const approveListing = asyncHandler(async (req, res) => {
   const listing = await adminService.approveListing(req.params.id);
   sendResponse(res, { message: MESSAGES.LISTING.ACTIVATED, data: { listing } });

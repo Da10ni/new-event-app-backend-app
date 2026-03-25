@@ -19,7 +19,7 @@ export const createBookingValidation = {
 
 export const updateBookingStatusValidation = {
   body: Joi.object({
-    status: Joi.string().valid('pending', 'confirmed', 'rejected').required(),
+    status: Joi.string().valid('pending', 'accepted', 'confirmed', 'rejected').required(),
     vendorResponse: Joi.string().max(2000),
   }),
   params: Joi.object({

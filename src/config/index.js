@@ -50,6 +50,11 @@ export const config = {
     maxLimit: 50,
   },
 
+  stripe: {
+    secretKey: process.env.STRIPE_SECRET_KEY,
+    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+  },
+
   app: {
     providerPortalUrl: process.env.PROVIDER_PORTAL_URL || 'http://localhost:5174',
   },

@@ -51,6 +51,7 @@ export const createListingValidation = {
 
 export const updateListingValidation = {
   body: Joi.object({
+    category: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
     title: Joi.string().trim().min(5).max(150),
     description: Joi.string().trim().min(20).max(5000),
     pricing: Joi.object({
@@ -61,7 +62,7 @@ export const updateListingValidation = {
       packages: Joi.array().items(
         Joi.object({
           name: Joi.string().required(),
-          description: Joi.string(),
+          description: Joi.string().allow(''),
           price: Joi.number().min(0).required(),
           includes: Joi.array().items(Joi.string()),
         })
@@ -72,12 +73,16 @@ export const updateListingValidation = {
       max: Joi.number().min(0),
     }),
     address: Joi.object({
-      street: Joi.string().trim(),
+      street: Joi.string().trim().allow(''),
       city: Joi.string().trim(),
-      state: Joi.string().trim(),
+      state: Joi.string().trim().allow(''),
       country: Joi.string().trim(),
-      zipCode: Joi.string().trim(),
-      area: Joi.string().trim(),
+      zipCode: Joi.string().trim().allow(''),
+      area: Joi.string().trim().allow(''),
+    }),
+    location: Joi.object({
+      type: Joi.string().valid('Point').default('Point'),
+      coordinates: Joi.array().items(Joi.number()).length(2),
     }),
     images: Joi.array().items(
       Joi.object({

@@ -10,3 +10,5 @@ export { default as RefreshToken } from './RefreshToken.model.js';
 export { default as OTP } from './OTP.model.js';
 export { default as Report } from './Report.model.js';
 export { default as Favorite } from './Favorite.model.js';
+export { default as Conversation } from './Conversation.model.js';
+export { default as Message } from './Message.model.js';

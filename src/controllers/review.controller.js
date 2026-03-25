@@ -8,6 +8,11 @@ export const createReview = asyncHandler(async (req, res) => {
   sendResponse(res, { statusCode: HTTP_STATUS.CREATED, message: MESSAGES.REVIEW.CREATED, data: { review } });
 });
 
+export const getReviewByBooking = asyncHandler(async (req, res) => {
+  const review = await reviewService.getReviewByBooking(req.params.bookingId, req.user._id);
+  sendResponse(res, { message: MESSAGES.GENERAL.SUCCESS, data: { review } });
+});
+
 export const updateReview = asyncHandler(async (req, res) => {
   const review = await reviewService.updateReview(req.params.id, req.user._id, req.body);
   sendResponse(res, { message: MESSAGES.REVIEW.UPDATED, data: { review } });

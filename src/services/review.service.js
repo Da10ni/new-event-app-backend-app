@@ -31,6 +31,22 @@ export const createReview = async (clientId, data) => {
   return review;
 };
 
+export const getReviewByBooking = async (bookingId, userId) => {
+  const booking = await Booking.findById(bookingId);
+  if (!booking) throw new AppError(MESSAGES.BOOKING.NOT_FOUND, HTTP_STATUS.NOT_FOUND);
+
+  const isClient = booking.client.toString() === userId.toString();
+  const vendor = !isClient ? await Vendor.findOne({ userId }) : null;
+  const isVendor = vendor && booking.vendor.toString() === vendor._id.toString();
+
+  if (!isClient && !isVendor) throw new AppError(MESSAGES.AUTH.FORBIDDEN, HTTP_STATUS.FORBIDDEN);
+
+  const review = await Review.findOne({ booking: bookingId })
+    .populate('client', 'firstName lastName avatar');
+  if (!review) throw new AppError(MESSAGES.REVIEW.NOT_FOUND, HTTP_STATUS.NOT_FOUND);
+  return review;
+};
+
 export const getListingReviews = async (listingId, queryString) => {
   const features = new ApiFeatures(
     Review.find({ listing: listingId, isVisible: true })

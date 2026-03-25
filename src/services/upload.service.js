@@ -10,7 +10,7 @@ export const uploadImage = async (file, folder) => {
     const result = await cloudinary.uploader.upload(dataURI, {
       folder,
       resource_type: 'image',
-      transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+      quality: 'auto:best',
     });
 
     return { url: result.secure_url, publicId: result.public_id };

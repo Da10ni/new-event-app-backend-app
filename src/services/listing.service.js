@@ -60,6 +60,30 @@ export const getFeaturedListings = async () => {
   return anyApproved;
 };
 
+export const getPopularCities = async (limit = 6) => {
+  const cities = await Listing.aggregate([
+    { $match: { status: LISTING_STATUSES.ACTIVE } },
+    {
+      $group: {
+        _id: '$address.city',
+        count: { $sum: 1 },
+        image: { $first: { $arrayElemAt: ['$images.url', 0] } },
+      },
+    },
+    { $sort: { count: -1 } },
+    { $limit: limit },
+    {
+      $project: {
+        _id: 0,
+        name: '$_id',
+        listings: '$count',
+        image: { $ifNull: ['$image', ''] },
+      },
+    },
+  ]);
+  return cities;
+};
+
 export const createListing = async (userId, data) => {
   if (!data || !data.title) throw new AppError('Listing title is required', HTTP_STATUS.BAD_REQUEST);
 

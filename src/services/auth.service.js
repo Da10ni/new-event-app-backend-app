@@ -14,9 +14,9 @@ import { config } from '../config/index.js';
 const hashToken = (token) => crypto.createHash('sha256').update(token).digest('hex');
 
 export const registerClient = async (userData) => {
-  const existingUser = await User.findOne({
-    $or: [{ email: userData.email }, { phone: userData.phone }],
-  });
+  const orConditions = [{ email: userData.email }];
+  if (userData.phone) orConditions.push({ phone: userData.phone });
+  const existingUser = await User.findOne({ $or: orConditions });
   if (existingUser) throw new AppError(MESSAGES.USER.ALREADY_EXISTS, HTTP_STATUS.CONFLICT);
 
   const hashedPw = await hashPassword(userData.password);
@@ -39,9 +39,9 @@ export const registerClient = async (userData) => {
 
 export const registerVendor = async (vendorData) => {
   const { businessName, description, categories, businessPhone, businessEmail, address, ...userData } = vendorData;
-  const existingUser = await User.findOne({
-    $or: [{ email: userData.email }, { phone: userData.phone }],
-  });
+  const orConditions = [{ email: userData.email }];
+  if (userData.phone) orConditions.push({ phone: userData.phone });
+  const existingUser = await User.findOne({ $or: orConditions });
   if (existingUser) throw new AppError(MESSAGES.USER.ALREADY_EXISTS, HTTP_STATUS.CONFLICT);
 
   const hashedPw = await hashPassword(userData.password);

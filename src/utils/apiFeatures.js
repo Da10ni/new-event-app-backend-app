@@ -43,6 +43,11 @@ export class ApiFeatures {
       delete queryObj.rating;
     }
 
+    // Handle comma-separated status filter
+    if (queryObj.status && typeof queryObj.status === 'string' && queryObj.status.includes(',')) {
+      queryObj.status = { $in: queryObj.status.split(',').map((s) => s.trim()) };
+    }
+
     // Handle city filter
     if (queryObj.city) {
       queryObj['address.city'] = new RegExp(queryObj.city, 'i');

@@ -1,13 +1,19 @@
+import http from 'http';
 import app from './app.js';
 import { config } from './config/index.js';
 import { connectDB } from './config/db.js';
+import { initializeSocket } from './config/socket.js';
+import corsOptions from './config/cors.js';
 import { logger } from './utils/logger.js';
 
 const startServer = async () => {
   try {
     await connectDB();
 
-    app.listen(config.port, () => {
+    const server = http.createServer(app);
+    initializeSocket(server, corsOptions);
+
+    server.listen(config.port, () => {
       logger.info(`Server running in ${config.env} mode on port ${config.port}`);
     });
   } catch (error) {

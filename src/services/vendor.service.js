@@ -163,7 +163,7 @@ export const getVendorDashboard = async (userId) => {
       match: { vendor: vendorId },
       select: 'title category',
     })
-    .populate('user', 'firstName lastName email')
+    .populate('client', 'firstName lastName email')
     .sort({ createdAt: -1 })
     .limit(10)
     .lean();

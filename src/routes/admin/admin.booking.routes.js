@@ -3,4 +3,5 @@ import * as bookingController from '../../controllers/admin/admin.booking.contro
 
 const router = Router();
 router.get('/', bookingController.getBookings);
+router.get('/:id', bookingController.getBookingById);
 export default router;

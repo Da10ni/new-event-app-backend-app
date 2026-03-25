@@ -1,12 +1,17 @@
 import express from 'express';
 import cors from 'cors';
+import corsOptions from './config/cors.js';
 import routes from './routes/index.js';
 import { errorHandler } from './middlewares/errorHandler.middleware.js';
 
 const app = express();
 
-// Basic middleware
-app.use(cors());
+// CORS middleware
+app.use(cors(corsOptions));
+
+// Stripe webhook needs raw body — must be before express.json()
+app.use('/api/v1/payments/webhook', express.raw({ type: 'application/json' }));
+
 app.use(express.json());
 
 // Health Check

@@ -10,8 +10,9 @@ const router = Router();
 
 router.get('/', validate(listingQueryValidation), listingController.getListings);
 router.get('/featured', listingController.getFeaturedListings);
-router.get('/:slug', listingController.getListingBySlug);
+router.get('/cities', listingController.getPopularCities);
 router.get('/:id/reviews', listingController.getListingReviews);
+router.get('/:slug', listingController.getListingBySlug);
 router.post('/', authenticate, authorize(USER_ROLES.VENDOR), validate(createListingValidation), listingController.createListing);
 router.patch('/:id', authenticate, authorize(USER_ROLES.VENDOR), validate(updateListingValidation), listingController.updateListing);
 router.delete('/:id', authenticate, authorize(USER_ROLES.VENDOR), listingController.deleteListing);

@@ -19,6 +19,11 @@ export const getFeaturedListings = asyncHandler(async (req, res) => {
   sendResponse(res, { message: MESSAGES.GENERAL.SUCCESS, data: { listings } });
 });
 
+export const getPopularCities = asyncHandler(async (req, res) => {
+  const cities = await listingService.getPopularCities();
+  sendResponse(res, { message: MESSAGES.GENERAL.SUCCESS, data: { cities } });
+});
+
 export const createListing = asyncHandler(async (req, res) => {
   const listing = await listingService.createListing(req.user._id, req.body);
   sendResponse(res, { statusCode: HTTP_STATUS.CREATED, message: MESSAGES.LISTING.CREATED, data: { listing } });
